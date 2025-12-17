@@ -1,4 +1,7 @@
-<x-app-layout>
+
+@extends('layouts.app')
+
+@section('content')
 <h2 class="text-2xl font-bold p-6">Transaction History</h2>
 
 @foreach ($transactions as $t)
@@ -7,4 +10,4 @@
 <p>Total: Rp {{ number_format($t->total) }}</p>
 </div>
 @endforeach
-</x-app-layout>
+@endsection

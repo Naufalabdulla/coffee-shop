@@ -62,6 +62,7 @@ class OrderController extends Controller
         return back();
     }
 
+
     public function pay()
     {
         $cart = session()->get('cart', []);
@@ -69,7 +70,7 @@ class OrderController extends Controller
         $total = $subtotal + ($subtotal * 0.10);
 
         Transaction::create([
-            'user_id' => auth()->id(),
+            'user_id' => 1, // default user untuk demo
             'total' => $total
         ]);
 
@@ -80,7 +81,7 @@ class OrderController extends Controller
     public function transactions()
     {
         $transactions = Transaction::where(
-            'user_id', auth()->id()
+            'user_id', 1 // default user untuk demo
         )->latest()->get();
 
         return view('order.transactions', compact('transactions'));

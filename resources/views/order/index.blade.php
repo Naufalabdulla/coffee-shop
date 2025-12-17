@@ -1,4 +1,7 @@
-<x-app-layout>
+
+@extends('layouts.app')
+
+@section('content')
 <div class="flex gap-6 p-6">
 
 {{-- MENU --}}
@@ -56,4 +59,4 @@ Print Bills
 
 </div>
 </div>
-</x-app-layout>
+@endsection
