@@ -10,8 +10,8 @@
 
         <div class="d-flex gap-2 mb-4">
             <button class="btn btn-brown active">All</button>
-            <button class="btn btn-outline-secondary">Coffe</button>
-            <button class="btn btn-outline-secondary">Non-Coffee</button>
+            <button class="btn btn-outline-dark">Coffee</button>
+            <button class="btn btn-outline-dark">Non-Coffee</button>
         </div>
 
         <div class="row g-3">

@@ -5,7 +5,7 @@
              class="logo">
 
         <h2 class="mt-2"
-            style="font-weight: 700">
+            style="font-weight: 700;color:#493628">
             Shamy Coffee ‧₊˚ ⋅ ☕︎ 𓎩 ‧₊˚ ⋅
         </h2>
     </div>
