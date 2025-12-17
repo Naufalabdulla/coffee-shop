@@ -18,6 +18,8 @@
             @foreach($products as $product)
                 <div class="col-md-4 col-lg-3">
                     <div class="product-card">
+                        <button class="btn-add">+</button>
+
                         <div class="product-img">
                             <img src="{{ asset($product->image_url) }}"
                                  alt="{{ $product->name }}">

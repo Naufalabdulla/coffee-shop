@@ -32,5 +32,30 @@ class ProductSeeder extends Seeder
             'price' => 25000,
             'image_url' => 'img/Greentea.jpg',
         ]);
+
+        Product::create([
+            'name' => 'Tiramisu Cake',
+            'price' => 29000,
+            'image_url' => 'img/Tiramisu.jpg',
+        ]);
+
+        Product::create([
+            'name' => 'Cinnamon Roll',
+            'price' => 23000,
+            'image_url' => 'img/Cinnamonroll.jpg',
+        ]);
+        
+
+        Product::create([
+            'name' => 'Cheese Cake Strawberry',
+            'price' => 30000,
+            'image_url' => 'img/cheesecakeStrawberry.jpg',
+        ]);
+
+        Product::create([
+            'name' => 'Ramen Shamy',
+            'price' => 30000,
+            'image_url' => 'Ramen.jpg',
+        ]);
     }
 }
