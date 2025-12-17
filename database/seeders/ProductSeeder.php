@@ -10,17 +10,27 @@ class ProductSeeder extends Seeder
     public function run()
     {
         Product::create([
-            'name' => 'Espresso',
-            'price' => 2.50,
-            'image_url' => 'https://example.com/espresso.jpg',
+            'name' => 'Es Kopi Susu Awan',
+            'price' => 24000,
+            'image_url' => 'img/EsKopiAwan.jpg',
         ]);
 
         Product::create([
-            'name' => 'Cappuccino',
-            'price' => 3.00,
-            'image_url' => 'https://example.com/cappuccino.jpg',
+            'name' => 'Es Kopi Shamy',
+            'price' => 20000,
+            'image_url' => 'img/EsKopiShamy.jpg',
         ]);
 
-        // Tambahkan produk lainnya sesuai kebutuhan
+        Product::create([
+            'name' => 'Teh Susu Awan',
+            'price' => 28000,
+            'image_url' => 'img/tehSusuAwan.jpg',
+        ]);
+
+        Product::create([
+            'name' => 'Green Tea',
+            'price' => 25000,
+            'image_url' => 'img/Greentea.jpg',
+        ]);
     }
 }
