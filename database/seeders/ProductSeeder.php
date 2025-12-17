@@ -54,8 +54,8 @@ class ProductSeeder extends Seeder
 
         Product::create([
             'name' => 'Ramen Shamy',
-            'price' => 30000,
-            'image_url' => 'Ramen.jpg',
+            'price' => 26000,
+            'image_url' => 'img/RamenShamy.jpg',
         ]);
     }
 }
