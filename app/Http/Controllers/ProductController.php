@@ -2,96 +2,98 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product; // Import model Product
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     /**
-     * Menampilkan semua produk.
+     * ADMIN: List produk
      */
     public function index()
     {
-        // Mengambil semua data produk dari database
         $products = Product::all();
-        $cart = session()->get('cart', []);
-
-        // Mengirim data produk ke view
-        return view('product.index', compact('products', 'cart'));
-    }
-
-    public function order()
-    {
-        $products = Product::all();
-        $cart = session()->get('cart', []);
-
-        return view('product.index', compact('products', 'cart'));
+        return view('product.index', compact('products'));
     }
 
     /**
-     * Tambah produk ke cart
+     * ADMIN: Form tambah produk
      */
-    public function addToCart($id)
+    public function create()
     {
-        $product = Product::findOrFail($id);
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$id])) {
-            $cart[$id]['qty']++;
-        } else {
-            $cart[$id] = [
-                'name'  => $product->name,
-                'price' => $product->price,
-                'qty'   => 1
-            ];
-        }
-
-        session()->put('cart', $cart);
-        return redirect()->back();
+        return view('product.create');
     }
 
     /**
-     * Update jumlah item
+     * ADMIN: Simpan produk
      */
-    public function updateCart(Request $request, $id)
+    public function store(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $request->validate([
+            'name'  => 'required',
+            'price' => 'required|numeric',
+            'image' => 'required|image'
+        ]);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['qty'] = max(1, $request->qty);
-            session()->put('cart', $cart);
-        }
+        // upload gambar ke public/img
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('img'), $imageName);
 
-        return redirect()->back();
+        Product::create([
+            'name'      => $request->name,
+            'price'     => $request->price,
+            'image_url' => 'img/' . $imageName
+        ]);
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil ditambahkan');
     }
 
-    public function increase($id)
+    /**
+     * ADMIN: Form edit produk
+     */
+    public function edit(Product $product)
     {
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$id])) {
-            $cart[$id]['qty']++;
-            session()->put('cart', $cart);
-        }
-
-        return redirect()->back();
+        return view('product.edit', compact('product'));
     }
 
-    public function decrease($id)
+    /**
+     * ADMIN: Update produk
+     */
+    public function update(Request $request, Product $product)
     {
-        $cart = session()->get('cart', []);
+        $request->validate([
+            'name'  => 'required',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image'
+        ]);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['qty']--;
+        $data = [
+            'name'  => $request->name,
+            'price' => $request->price,
+        ];
 
-            if ($cart[$id]['qty'] <= 0) {
-                unset($cart[$id]);
-            }
-
-            session()->put('cart', $cart);
+        // jika upload gambar baru
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('img'), $imageName);
+            $data['image_url'] = 'img/' . $imageName;
         }
 
-        return redirect()->back();
+        $product->update($data);
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil diupdate');
     }
 
+    /**
+     * ADMIN: Hapus produk
+     */
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil dihapus');
+    }
 }

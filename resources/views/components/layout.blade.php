@@ -14,5 +14,7 @@
     <main>
         {{ $slot }}
     </main>
+
+    <x-footer />
 </body>
 </html>
