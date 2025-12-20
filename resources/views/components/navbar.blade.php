@@ -8,5 +8,23 @@
             style="font-weight: 700;color:#493628">
             Shamy Coffee ‧₊˚ ⋅ ☕︎ 𓎩 ‧₊˚ ⋅
         </h2>
+        <!-- CENTER: TITLE -->
+        <!-- <div class="mx-auto text-muted fw-semibold">
+            Halaman Admin Product
+        </div> -->
+
+        <!-- RIGHT: ROLE -->
+        <!-- <div>
+            @php
+                // simulasi role
+                $role = $role ?? 'Admin';
+            @endphp
+
+            <span class="badge
+                {{ $role === 'Admin' ? 'bg-danger' : 'bg-secondary' }}">
+                {{ $role }}
+            </span>
+        </div> -->
     </div>
+    
 </nav>
