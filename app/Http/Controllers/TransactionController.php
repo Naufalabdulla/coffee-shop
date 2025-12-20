@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class TransactionController extends Controller
 {
@@ -12,7 +13,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Transaction::with(['user', 'product'])
+            ->latest()->get();
+
+        return view('transactions.index', compact('transactions'));
     }
 
     /**
@@ -20,7 +24,8 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        //
+        $products = Product::all();
+        return view('transactions.create', compact('products'));
     }
 
     /**
@@ -28,7 +33,20 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity'   => 'required|integer|min:1',
+        ]);
+
+        Transaction::create([
+            // 'user_id'    => auth()->user()->id(),
+            'product_id' => $request->product_id,
+            'quantity'   => $request->quantity,
+            'status'     => 'ordered',
+        ]);
+
+        return redirect()->route('transactions.index')
+            ->with('success', 'Pesanan berhasil dibuat');
     }
 
     /**
@@ -36,7 +54,7 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        return view('transactions.show', compact('transaction'));
     }
 
     /**
@@ -52,16 +70,27 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-        //
+         $request->validate([
+            'status' => 'required|in:ordered,paid,processing,done,cancelled'
+        ]);
+
+        $transaction->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status transaksi diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
+   /**
+     * Hapus transaksi
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Transaction $transaction){
     {
-        //
+        $transaction->delete();
+
+        return back()->with('success', 'Transaksi berhasil dihapus');
     }
+}
     public function order(Request $request) {
         $request->validate([
 
