@@ -84,6 +84,6 @@ class OrderController extends Controller
             'user_id', 1 // default user untuk demo
         )->latest()->get();
 
-        return view('order.transactions', compact('transactions'));
+        return view('order.transaction', compact('transactions'));
     }
 }
