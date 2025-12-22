@@ -1,9 +1,17 @@
-<footer class="bg-dark text-white mt-5 p-4 text-center">
-    <div>
-        <strong>Coffee Lab</strong> ☕
-    </div>
+<footer class="mini-footer shadow p-3">
+    <div class="container text-center d-flex flex-column align-items-center shadow-lg p-3">
 
-    <div class="text-muted small">
-        © {{ date('Y') }} Coffee Lab. All rights reserved.
+        <h6 class="fw-semibold mb-1">Shamy Coffee</h6>
+
+        <ul class="mini-footer-menu mb-1">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Menu</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <p class="mini-copy mb-0">
+            © {{ date('Y') }} Shamy Coffee
+        </p>
+
     </div>
 </footer>
