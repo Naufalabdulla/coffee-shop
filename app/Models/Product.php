@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'name',
-        'price',
-        'categories_id',
-    ];
+    protected $fillable = ['name', 'description', 'price', 'image_url'];
 
-    public function category()
+    /**
+     * Get the carts for this product
+     */
+    public function carts()
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasMany(Cart::class);
     }
 }
