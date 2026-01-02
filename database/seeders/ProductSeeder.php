@@ -12,13 +12,13 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Espresso',
             'price' => 2.50,
-            'image_url' => 'https://example.com/espresso.jpg',
+            // 'image_url' => 'https://example.com/espresso.jpg',
         ]);
 
         Product::create([
             'name' => 'Cappuccino',
             'price' => 3.00,
-            'image_url' => 'https://example.com/cappuccino.jpg',
+            // 'image_url' => 'https://example.com/cappuccino.jpg',
         ]);
 
         // Tambahkan produk lainnya sesuai kebutuhan

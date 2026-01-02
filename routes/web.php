@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -35,7 +36,8 @@ Route::middleware(['auth'])->group(function () {
     // Rute untuk menghapus item dari cart
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
-Route::resource('products', App\Http\Controllers\ProductController::class);
-Route::resource('transactions', TransactionController::class)->middleware('auth');
+Route::resource('products', App\Http\Controllers\ProductController::class)->only(['index'])->middleware([Permission::class . ':first floor']);
+Route::resource('products', App\Http\Controllers\ProductController::class)->except(['index'])->middleware([Permission::class . ':second floor']);
+Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', Permission::class . 'first floor']);
 
 require __DIR__ . '/auth.php';
