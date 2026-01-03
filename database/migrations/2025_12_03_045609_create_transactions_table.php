@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->nullable();
+            $table->integer('total');
+            $table->string('order_id');
+            $table->string('snaptoken')->nullable();
+            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
+            $table->enum('payment_status', ['unpaid', 'paid', 'failed'])->default('unpaid');
             $table->timestamps();
         });
     }

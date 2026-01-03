@@ -5,15 +5,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Models\Permission;
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -21,7 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/', [ProductController::class, 'index'])->name('product.index');
+Route::get('/', [ProductController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     // Rute untuk halaman cart
@@ -36,8 +29,9 @@ Route::middleware(['auth'])->group(function () {
     // Rute untuk menghapus item dari cart
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
-Route::resource('products', App\Http\Controllers\ProductController::class)->only(['index'])->middleware([Permission::class . ':first floor']);
-Route::resource('products', App\Http\Controllers\ProductController::class)->except(['index'])->middleware([Permission::class . ':second floor']);
-Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', Permission::class . 'first floor']);
+Route::resource('products', App\Http\Controllers\ProductController::class)->only(['index'])->middleware([PermissionMiddleware::class . ':first floor']);
+Route::resource('products', App\Http\Controllers\ProductController::class)->except(['index'])->middleware([PermissionMiddleware::class . ':second floor']);
+Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', PermissionMiddleware::class . ':first floor']);
+Route::post('/midtrans-callback', [TransactionController::class, 'midtranscallback']);
 
 require __DIR__ . '/auth.php';

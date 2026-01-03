@@ -408,21 +408,22 @@
                     <div class="cart-type">Guest</div>
                 @endauth
             </div>
-
-            <div class="cart-items-container" id="cartItems">
-                @auth
+            <form action="{{ route('transactions.store') }}" method="post">
+                @csrf
+                <div class="cart-items-container" id="cartItems">
+                    @auth
                     <div id="cartContent">
                         <div class="empty-cart-msg">Keranjang kosong</div>
                     </div>
-                @else
+                    @else
                     <div class="login-prompt">
                         <p>Silakan login untuk mulai berbelanja</p>
                         <a href="/login" class="login-link">Login Sekarang</a>
                     </div>
-                @endauth
-            </div>
-
-            @auth
+                    @endauth
+                </div>
+                
+                @auth
                 <div class="cart-summary">
                     <div class="summary-row">
                         <span>Subtotal</span>
@@ -436,8 +437,9 @@
                         <span>Total</span>
                         <span id="total">$0.00</span>
                     </div>
-                    <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
+                    <button type="submit" class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
                 </div>
+            </form>
             @endauth
         </div>
     </div>
@@ -508,13 +510,15 @@
                 const itemTotal = item.price * item.quantity;
                 html += `
                     <div class="cart-item">
+                        <input type="hidden" name="items[${item.id}][product_id]" value="${item.id}">
+                        <input type="hidden" name="items[${item.id}][quantity]" value="${item.quantity}">
                         <div class="cart-item-image">☕</div>
                         <div class="cart-item-details">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">$${(item.price / 1000).toFixed(2)}</div>
+                            <div class="cart-item-name" name="item[]">${item.name}</div>
+                            <div class="cart-item-price" name="price[]">$${(item.price / 1000).toFixed(2)}</div>
                             <div class="cart-item-qty">
                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
-                                <span class="qty-display">${item.quantity}</span>
+                                <span class="qty-display" name"quantity[]">${item.quantity}</span>
                                 <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
                             </div>
                         </div>
@@ -538,10 +542,10 @@
         }
 
         document.getElementById('checkoutBtn').addEventListener('click', function() {
-            if (Object.keys(cartData).length > 0) {
-                alert('Fitur checkout sedang dikembangkan');
-                // Bisa diarahkan ke halaman checkout/payment nantinya
-            }
+            // if (Object.keys(cartData).length > 0) {
+            //     alert('Fitur checkout sedang dikembangkan');
+            //     // Bisa diarahkan ke halaman checkout/payment nantinya
+            // }
         });
 
         // Initialize cart on page load
