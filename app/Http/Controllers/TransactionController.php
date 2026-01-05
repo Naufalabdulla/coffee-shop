@@ -35,12 +35,15 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        // $validated = $request->validate([
-        //     // 'product_id' => 'required|exists:products,id',
-        //     // 'quantity'   => 'required|integer|min:1',
-        //     // 'item' => 'required',
-        //     // 'status' => 'required',
-        // ]);
+        $validated = $request->validate([
+            // 'product_id' => 'required|exists:products,id',
+            // 'quantity'   => 'required|integer|min:1',
+            // 'item' => 'required',
+            // 'status' => 'required',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+        ]);
 
         $transaction = Transaction::create([
             'user_id' => auth()->id(),

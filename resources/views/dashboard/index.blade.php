@@ -55,51 +55,56 @@
                 </div>
             @else
                 {{-- JIKA CART ADA --}}
-                @foreach($cart as $id => $item)
-                    <div class="order-item d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <strong>{{ $item['name'] }}</strong><br>
-                            <small>Rp {{ number_format($item['price'], 0, ',', '.') }}</small>
+                
+
+                    @foreach($cart as $id => $item)
+                        <div class="order-item d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <strong>{{ $item['name'] }}</strong><br>
+                                <small>Rp {{ number_format($item['price'], 0, ',', '.') }}</small>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <form action="{{ route('cart.decrease', $id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-sm btn-outline-dark">-</button>
+                                </form>
+
+                                <span class="fw-bold">{{ $item['qty'] }}</span>
+
+                                <form action="{{ route('cart.increase', $id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-sm btn-dark">+</button>
+                                </form>
+                            </div>
                         </div>
+                    @endforeach
 
-                        <div class="d-flex align-items-center gap-2">
-                            <form action="{{ route('cart.decrease', $id) }}" method="POST">
-                                @csrf
-                                <button class="btn btn-sm btn-outline-dark">-</button>
-                            </form>
+                    <hr class="my-4">
 
-                            <span class="fw-bold">{{ $item['qty'] }}</span>
+                    {{-- TOTAL --}}
+                    <p>Subtotal: Rp {{ number_format($subtotal) }}</p>
+                    <p>Tax (10%): Rp {{ number_format($tax) }}</p>
+                    <p class="fw-bold fs-5">Total: Rp {{ number_format($total) }}</p>
 
-                            <form action="{{ route('cart.increase', $id) }}" method="POST">
-                                @csrf
-                                <button class="btn btn-sm btn-dark">+</button>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
-
-                <hr class="my-4">
-
-                {{-- TOTAL --}}
-                <p>Subtotal: Rp {{ number_format($subtotal) }}</p>
-                <p>Tax (10%): Rp {{ number_format($tax) }}</p>
-                <p class="fw-bold fs-5">Total: Rp {{ number_format($total) }}</p>
-
-                {{-- STATUS --}}
-                <p class="mt-3 text-muted">Status Pembayaran</p>
+                    {{-- STATUS --}}
+                    <p class="mt-3 text-muted">Status Pembayaran</p>
 
                 {{-- BUTTON --}}
+                <form method="POST" action="{{ route('transactions.store') }}" class="mt-2">
+                    @csrf
+                    @foreach($cart as $id => $item)
+                        <input type="hidden" name="items[{{ $loop->index }}][product_id]" value="{{ $id }}">
+                        <input type="hidden" name="items[{{ $loop->index }}][quantity]" value="{{ $item['qty'] }}">
+                     @endforeach
+                    <button class="w-full text-white py-2 rounded" style="background-color:green">
+                        Pay Now
+                    </button>
+                </form>
                 <form method="POST" action="{{ route('cart.cancel') }}" class="mt-2">
                     @csrf
                     <button class="w-full text-white py-2 rounded" style="background-color:maroon" onclick="return confirm('Yakin ingin membatalkan pesanan?')">
                         Cancel Order
-                    </button>
-                </form>
-
-                <form method="POST" action="/pay" class="mt-2">
-                    @csrf
-                    <button class="w-full text-white py-2 rounded" style="background-color:green">
-                        Pay Now
                     </button>
                 </form>
             @endif
