@@ -91,15 +91,14 @@
                 {{-- BUTTON --}}
                 <form method="POST" action="{{ route('cart.cancel') }}" class="mt-2">
                     @csrf
-                    <button class="w-full bg-gray-400 text-white py-2 rounded" 
-                    onclick="return confirm('Yakin ingin membatalkan pesanan?')">
+                    <button class="w-full text-white py-2 rounded" style="background-color:maroon" onclick="return confirm('Yakin ingin membatalkan pesanan?')">
                         Cancel Order
                     </button>
                 </form>
 
                 <form method="POST" action="/pay" class="mt-2">
                     @csrf
-                    <button class="w-full bg-red-500 text-white py-2 rounded">
+                    <button class="w-full text-white py-2 rounded" style="background-color:green">
                         Pay Now
                     </button>
                 </form>
