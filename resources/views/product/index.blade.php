@@ -1,6 +1,5 @@
 <x-layout>
     <div class="pos-container">
-        <!-- KIRI: MENU -->
         <div class="menu-section">
             <h3 class="fw-bold mt-2">Hi Admin, Welcome to Coffee Lab</h3>
             <p class="text-muted">Which section would you like to manage?</p>
@@ -8,33 +7,25 @@
                 <a href="{{ route('product.index') }}" class="btn btn-outline-dark px-4">Product</a>
                 <a href="{{ route('user.index') }}" class="btn btn-outline-dark px-4">User </a>
             </div>
-            
             <hr class="my-4">
-
             <div class="d-flex gap-2 mb-4">
                 <a href="{{ route('product.create') }}" class="btn btn-brown">
                     + Add Product
                 </a>
             </div>
-
             <div class="row g-3">
                 @foreach ($products as $product)
                     <div class="col-md-4 col-lg-3">
                         <div class="product-card h-100 d-flex flex-column">
-                            <!-- IMAGE -->
                             <div class="product-img">
                                 <img src="{{ asset($product->image_url) }}" alt="{{ $product->name }}">
                             </div>
-
-                            <!-- INFO -->
                             <div class="p-2">
                                 <strong>{{ $product->name }}</strong>
                                 <div class="price">
                                     Rp {{ number_format($product->price, 0, ',', '.') }}
                                 </div>
                             </div>
-
-                            <!-- ACTION BUTTON -->
                             <div class="mt-auto d-flex justify-content-end gap-2 p-2">
                                 <a href="{{ route('product.edit', $product) }}" class="btn btn-sm btn-outline-primary">Update</a>
 
