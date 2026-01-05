@@ -1,37 +1,68 @@
 <?php
-
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Models\Permission;
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// USER
+Route::get('/', function () {
+    return redirect()->route('dashboard');
 });
 
-Route::get('/', [ProductController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
-    // Rute untuk halaman cart
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+// CART (USER)
+Route::post('/add-to-cart/{id}', [DashboardController::class, 'addToCart'])
+    ->name('cart.add');
 
-    // Rute untuk menambahkan item ke cart
-    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::post('/cart/increase/{id}', [DashboardController::class, 'increase'])
+    ->name('cart.increase');
 
-    // Rute untuk mengupdate item di cart
-    Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/decrease/{id}', [DashboardController::class, 'decrease'])
+    ->name('cart.decrease');
 
-    // Rute untuk menghapus item dari cart
-    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-});
-Route::resource('products', App\Http\Controllers\ProductController::class)->only(['index'])->middleware([PermissionMiddleware::class . ':first floor']);
-Route::resource('products', App\Http\Controllers\ProductController::class)->except(['index'])->middleware([PermissionMiddleware::class . ':second floor']);
-Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', PermissionMiddleware::class . ':first floor']);
-Route::post('/midtrans-callback', [TransactionController::class, 'midtranscallback']);
+Route::post('/cart/cancel', [DashboardController::class, 'cancel'])
+    ->name('cart.cancel');
 
-require __DIR__ . '/auth.php';
+// ADMIN (PRODUCT)
+Route::get('/product', [ProductController::class, 'index'])
+    ->name('product.index');
+
+Route::get('/product/create', [ProductController::class, 'create'])
+    ->name('product.create');
+
+Route::post('/product', [ProductController::class, 'store'])
+    ->name('product.store');
+
+Route::get('/product/{product}/edit', [ProductController::class, 'edit'])
+    ->name('product.edit');
+
+Route::put('/product/{product}', [ProductController::class, 'update'])
+    ->name('product.update');
+
+Route::delete('/product/{product}', [ProductController::class, 'destroy'])
+    ->name('product.destroy');
+
+// ADMIN (USER / STAFF)
+Route::get('/user', [UserController::class, 'index'])
+    ->name('user.index');
+
+Route::get('/user/create', [UserController::class, 'create'])
+    ->name('user.create');
+
+Route::post('/user', [UserController::class, 'store'])
+    ->name('user.store');
+
+Route::get('/user/{id}/edit', [UserController::class, 'edit'])
+    ->name('user.edit');
+
+Route::put('/user/{id}', [UserController::class, 'update'])
+    ->name('user.update');
+
+Route::delete('/user/{id}', [UserController::class, 'destroy'])
+    ->name('user.destroy');
+
