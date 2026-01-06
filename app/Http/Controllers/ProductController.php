@@ -8,58 +8,92 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * ADMIN: List produk
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        return view('product.index', compact('products'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * ADMIN: Form tambah produk
      */
     public function create()
     {
-        //
+        return view('product.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * ADMIN: Simpan produk
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'  => 'required',
+            'price' => 'required|numeric',
+            'image' => 'required|image'
+        ]);
+
+        // upload gambar ke public/img
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('img'), $imageName);
+
+        Product::create([
+            'name'      => $request->name,
+            'price'     => $request->price,
+            'image_url' => 'img/' . $imageName
+        ]);
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil ditambahkan');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
+     * ADMIN: Form edit produk
      */
     public function edit(Product $product)
     {
-        //
+        return view('product.edit', compact('product'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * ADMIN: Update produk
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $request->validate([
+            'name'  => 'required',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image'
+        ]);
+
+        $data = [
+            'name'  => $request->name,
+            'price' => $request->price,
+        ];
+
+        // jika upload gambar baru
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('img'), $imageName);
+            $data['image_url'] = 'img/' . $imageName;
+        }
+
+        $product->update($data);
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil diupdate');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * ADMIN: Hapus produk
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product berhasil dihapus');
     }
 }
