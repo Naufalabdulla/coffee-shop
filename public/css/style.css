@@ -157,3 +157,20 @@ body {
     font-size: .7rem;
     color: #9aa0a6;
 }
+
+.transaction-row {
+    transition: background-color 0.2s ease;
+}
+
+.transaction-row:hover {
+    background-color: #f8f9fa;
+}
+
+.badge {
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    background-color: #ffffff;
+}
