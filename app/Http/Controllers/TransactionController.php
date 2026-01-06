@@ -49,6 +49,7 @@ class TransactionController extends Controller
             'user_id' => auth()->id(),
             'total' => 0,
             'order_id' => 'TRC-' . time(),
+            'status' => 'pending'
         ]);
 
         $total = 0;
@@ -132,65 +133,80 @@ class TransactionController extends Controller
      * Hapus transaksi
      */
     public function destroy(Transaction $transaction)
-    { {
+    { 
             $transaction->delete();
 
             return back()->with('success', 'Transaksi berhasil dihapus');
-        }
+        
     }
-    public function order(Request $request)
-    {
-        $request->validate([
+    // public function order(Request $request)
+    // {
+    //     $request->validate([
 
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1'
-        ]);
-        $transaction = Transaction::create([
-            // 'user_id' => auth()->id(),
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'status' => 'ordered'
-        ]);
-        return back()->with('success', 'Pesanan berhasil dibuat');
+    //         'product_id' => 'required|exists:products,id',
+    //         'quantity' => 'required|integer|min:1'
+    //     ]);
+    //     $transaction = Transaction::create([
+    //         // 'user_id' => auth()->id(),
+    //         'product_id' => $request->product_id,
+    //         'quantity' => $request->quantity,
+    //         'status' => 'ordered'
+    //     ]);
+    //     return back()->with('success', 'Pesanan berhasil dibuat');
 
-    }
+    // }
 
-    public function midtranscallback()
-    {
+    public function midtranscallback(Request $request)
+{
+    try {
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         \Midtrans\Config::$isProduction = config('midtrans.is_prod');
 
         $notif = new \Midtrans\Notification();
-        $transaction = $notif->transaction_status;
-        $fraud = $notif->fraud_status;
 
         $orderId = $notif->order_id;
-        $order = Transaction::where('invoice_number', $orderId)->first();
+        $transactionStatus = $notif->transaction_status;
+        $fraudStatus = $notif->fraud_status;
+
+        $order = Transaction::where('order_id', $orderId)->first();
+
         if (!$order) {
-            return response()->json(['error' => 'order no found'], 404);
+            return response()->json(['message' => 'Order ignored'], 200);
         }
 
-        if ($transaction == 'capture') {
-            if ($fraud == 'accept') {
-                $this->updateOrderStatus($order, 'paid', $notif);
-            }
-        } else if ($transaction == 'cancel') {
-            $this->updateOrderStatus($order, 'canceled', $notif);
-        } else if ($transaction == 'deny') {
-            $this->updateOrderStatus($order, 'failed', $notif);
-        } else if ($transaction == 'settlement') {
-            $this->updateOrderStatus($order, 'paid', $notif);
+        if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {
+            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+        } elseif ($transactionStatus === 'settlement') {
+            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+        } elseif ($transactionStatus === 'cancel') {
+            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+        } elseif ($transactionStatus === 'deny') {
+            $order->update(['status' => 'failed', 'payment_status' => 'failed']);
+        } elseif ($transactionStatus === 'expire') {
+            $order->update(['status' => 'expired', 'payment_status' => 'unpaid']);
         }
-    }
 
-    protected function updateOrderStatus(Transaction $order, string $status, $notif)
-    {
-        $order->update(['status' => $status]);
+        return response()->json(['message' => 'OK'], 200);
 
-        Transaction::updateOrCreate(['order_id' => $order->id], [
-            'amount' => $notif->gross_amount,
-            'status' => $status,
-            'payment_date' => in_array($status, ['paid', 'sattlement']) ? now() : null
+    } catch (\Exception $e) {
+        \Log::error('Midtrans Callback Error', [
+            'error' => $e->getMessage(),
+            'payload' => $request->all(),
         ]);
+
+        return response()->json(['message' => 'OK'], 200);
     }
+}
+
+
+    // protected function updateOrderStatus(Transaction $order, string $status, $notif)
+    // {
+    //     $order->update(['status' => $status]);
+
+    //     Transaction::updateOrCreate(['order_id' => $order->id], [
+    //         'amount' => $notif->gross_amount,
+    //         'status' => $status,
+    //         'payment_date' => in_array($status, ['paid', 'sattlement']) ? now() : null
+    //     ]);
+    // }
 }

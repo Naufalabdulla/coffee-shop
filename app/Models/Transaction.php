@@ -9,17 +9,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Transaction extends Model
 {
-    // protected $fillable = [
-    //     'user_id',
-    //     'product_id',
-    //     'quantity',
-    //     'total',
-    //     'status',
-    //     'payment_status',
-    //     'snaptoken',
-    // ];
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'order_id',
+        'quantity',
+        'total',
+        'status',
+        'payment_status',
+        'snaptoken',
+    ];
 
-    protected $guarded = ['id'];
+    // protected $guarded = ['id'];
 
     public function user()
     {

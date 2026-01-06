@@ -76,6 +76,6 @@ Route::delete('/user/{id}', [UserController::class, 'destroy'])
 
 
 Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', PermissionMiddleware::class . ':first floor']);
-Route::post('/midtrans-callback', [TransactionController::class, 'midtranscallback']);
+Route::post('payment/midtrans-callback', [TransactionController::class, 'midtranscallback']);
 
 require __DIR__ . '/auth.php';
