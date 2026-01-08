@@ -4,15 +4,15 @@
         <div class="menu-section">
             <h3 style="font-weight:700">Coffee Lab</h3>
             <p class="text-muted">Discover your favorite coffee</p>
-            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+            <form method="GET" action="{{ route('dashboard') }}" class="mb-4 d-flex">
                 <input
                     type="text"
                     name="search"
                     value="{{ $search }}"
                     placeholder="Search..."
-                    class="border px-3 py-2 rounded"
+                    class="border px-3 py-2 rounded form-control"
                 >
-                <button class="bg-black text-white px-4 py-2 rounded">
+                <button class="bg-black text-white px-4 ms-3 rounded">
                     Search
                 </button>
             </form>
