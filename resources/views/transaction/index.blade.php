@@ -2,9 +2,12 @@
     <div class="container my-5">
     <!-- Title -->
     <h3 class="fw-semibold mb-4 text-dark">My Transactions</h3>
+    <a href="{{ route('transactions.export') }}" class=" bg-success-subtle text-success text-decoration-none px-4 py-2 rounded">
+        Export Excel
+    </a>
 
     <!-- Card -->
-    <div class="card shadow-sm border-0 rounded-4">
+    <div class="card shadow-sm border-0 rounded-4 mt-5">
         <div class="card-body p-0">
 
             <table class="table align-middle mb-0">
@@ -30,7 +33,7 @@
 
                             <td class="px-4 py-3">
                                 <span class="badge rounded-pill px-3 py-2
-                                    {{ $transaction->status === 'paid'
+                                    {{ $transaction->status === 'completed'
                                         ? 'bg-success-subtle text-success'
                                         : 'bg-warning-subtle text-warning' }}">
                                     {{ strtoupper($transaction->status) }}

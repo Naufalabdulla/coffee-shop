@@ -21,4 +21,15 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+
+    public function scopeSearch($query, $keyword)
+    {
+        if (!$keyword) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($keyword) {
+            $q->where('name', 'like', "%{$keyword}%");
+        });
+    }
 }

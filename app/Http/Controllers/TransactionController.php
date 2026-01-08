@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Midtrans\Config as MConfig;
 use Midtrans\Snap;
+use App\Exports\TransactionsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class TransactionController extends Controller
 {
@@ -133,11 +136,11 @@ class TransactionController extends Controller
      * Hapus transaksi
      */
     public function destroy(Transaction $transaction)
-    { 
-            $transaction->delete();
+    {
+        $transaction->delete();
 
-            return back()->with('success', 'Transaksi berhasil dihapus');
-        
+        return back()->with('success', 'Transaksi berhasil dihapus');
+
     }
     // public function order(Request $request)
     // {
@@ -157,46 +160,46 @@ class TransactionController extends Controller
     // }
 
     public function midtranscallback(Request $request)
-{
-    try {
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = config('midtrans.is_prod');
+    {
+        try {
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$isProduction = config('midtrans.is_prod');
 
-        $notif = new \Midtrans\Notification();
+            $notif = new \Midtrans\Notification();
 
-        $orderId = $notif->order_id;
-        $transactionStatus = $notif->transaction_status;
-        $fraudStatus = $notif->fraud_status;
+            $orderId = $notif->order_id;
+            $transactionStatus = $notif->transaction_status;
+            $fraudStatus = $notif->fraud_status;
 
-        $order = Transaction::where('order_id', $orderId)->first();
+            $order = Transaction::where('order_id', $orderId)->first();
 
-        if (!$order) {
-            return response()->json(['message' => 'Order ignored'], 200);
+            if (!$order) {
+                return response()->json(['message' => 'Order ignored'], 200);
+            }
+
+            if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {
+                $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+            } elseif ($transactionStatus === 'settlement') {
+                $order->update(['status' => 'completed', 'payment_status' => 'paid']);
+            } elseif ($transactionStatus === 'cancel') {
+                $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+            } elseif ($transactionStatus === 'deny') {
+                $order->update(['status' => 'failed', 'payment_status' => 'failed']);
+            } elseif ($transactionStatus === 'expire') {
+                $order->update(['status' => 'expired', 'payment_status' => 'unpaid']);
+            }
+
+            return response()->json(['message' => 'OK'], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Midtrans Callback Error', [
+                'error' => $e->getMessage(),
+                'payload' => $request->all(),
+            ]);
+
+            return response()->json(['message' => 'OK'], 200);
         }
-
-        if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {
-            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
-        } elseif ($transactionStatus === 'settlement') {
-            $order->update(['status' => 'completed', 'payment_status' => 'paid']);
-        } elseif ($transactionStatus === 'cancel') {
-            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
-        } elseif ($transactionStatus === 'deny') {
-            $order->update(['status' => 'failed', 'payment_status' => 'failed']);
-        } elseif ($transactionStatus === 'expire') {
-            $order->update(['status' => 'expired', 'payment_status' => 'unpaid']);
-        }
-
-        return response()->json(['message' => 'OK'], 200);
-
-    } catch (\Exception $e) {
-        \Log::error('Midtrans Callback Error', [
-            'error' => $e->getMessage(),
-            'payload' => $request->all(),
-        ]);
-
-        return response()->json(['message' => 'OK'], 200);
     }
-}
 
 
     // protected function updateOrderStatus(Transaction $order, string $status, $notif)
@@ -209,4 +212,12 @@ class TransactionController extends Controller
     //         'payment_date' => in_array($status, ['paid', 'sattlement']) ? now() : null
     //     ]);
     // }
+
+    public function export()
+    {
+        return Excel::download(
+            new TransactionsExport,
+            'transactions.xlsx'
+        );
+    }
 }

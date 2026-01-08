@@ -78,4 +78,8 @@ Route::delete('/user/{id}', [UserController::class, 'destroy'])
 Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', PermissionMiddleware::class . ':first floor']);
 Route::post('payment/midtrans-callback', [TransactionController::class, 'midtranscallback']);
 
+Route::get('/nota/export', [TransactionController::class, 'export'])
+    ->name('transactions.export');
+
+
 require __DIR__ . '/auth.php';

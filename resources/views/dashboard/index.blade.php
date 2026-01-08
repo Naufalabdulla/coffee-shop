@@ -1,12 +1,21 @@
 <x-layout>
 
     <div class="pos-container">
-        <!-- KIRI: MENU -->
         <div class="menu-section">
             <h3 style="font-weight:700">Coffee Lab</h3>
             <p class="text-muted">Discover your favorite coffee</p>
-
-            <input type="text" class="form-control mb-3" placeholder="Search...">
+            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ $search }}"
+                    placeholder="Search..."
+                    class="border px-3 py-2 rounded"
+                >
+                <button class="bg-black text-white px-4 py-2 rounded">
+                    Search
+                </button>
+            </form>
 
             <div class="d-flex gap-2 mb-4">
                 <button class="btn btn-brown active">All</button>
@@ -43,18 +52,18 @@
             </div>
         </div>
 
-        <!-- KANAN: ORDER -->
+
         <div class="order-section">
             <h3 class="mt-3 fw-bold">My Order</h3>
             <small class="text-muted">Guest</small>
 
             @if(empty($cart))
-                {{-- JIKA CART KOSONG --}}
+
                 <div class="empty-order mt-4">
                     Silakan pilih menu
                 </div>
             @else
-                {{-- JIKA CART ADA --}}
+
                 
 
                     @foreach($cart as $id => $item)
@@ -82,15 +91,15 @@
 
                     <hr class="my-4">
 
-                    {{-- TOTAL --}}
+
                     <p>Subtotal: Rp {{ number_format($subtotal) }}</p>
                     <p>Tax (10%): Rp {{ number_format($tax) }}</p>
                     <p class="fw-bold fs-5">Total: Rp {{ number_format($total) }}</p>
 
-                    {{-- STATUS --}}
+
                     <p class="mt-3 text-muted">Status Pembayaran</p>
 
-                {{-- BUTTON --}}
+
                 <form method="POST" action="{{ route('transactions.store') }}" class="mt-2">
                     @csrf
                     @foreach($cart as $id => $item)

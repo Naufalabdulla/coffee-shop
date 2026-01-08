@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $search = $request->query('search');
+        
+        $products = Product::search($search)->get();
         $cart = session()->get('cart', []);
 
         $subtotal = 0;
@@ -25,7 +27,8 @@ class DashboardController extends Controller
             'cart',
             'subtotal',
             'tax',
-            'total'
+            'total',
+            'search'
         ));
     }
 
@@ -60,9 +63,9 @@ class DashboardController extends Controller
             $cart[$id]['qty']++;
         } else {
             $cart[$id] = [
-                'name'  => $product->name,
+                'name' => $product->name,
                 'price' => $product->price,
-                'qty'   => 1
+                'qty' => 1
             ];
         }
 
