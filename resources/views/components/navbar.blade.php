@@ -15,6 +15,15 @@
                 <li><a class="dropdown-item" href="{{ route('transactions.index') }}">Transaksi</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
+                    <form method="GET" action="{{ route('login') }}">
+                        @csrf
+                        <button type="submit"
+                                class="dropdown-item">
+                            Login
+                        </button>
+                    </form>
+                </li>
+                <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
