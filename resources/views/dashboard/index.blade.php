@@ -17,11 +17,11 @@
                 </button>
             </form>
 
-            <div class="d-flex gap-2 mb-4">
+            {{-- <div class="d-flex gap-2 mb-4">
                 <button class="btn btn-brown active">All</button>
                 <button class="btn btn-outline-dark">Coffee</button>
                 <button class="btn btn-outline-dark">Non-Coffee</button>
-            </div>
+            </div> --}}
 
             <div class="row g-3">
                 @foreach($products as $product)

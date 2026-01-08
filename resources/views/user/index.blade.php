@@ -28,7 +28,7 @@
 
                             <!-- ACTION BUTTON -->
                             <div class="mt-auto d-flex justify-content-end gap-2 p-2">
-                                <a href="{{ route('user.edit', $user) }}" class="btn btn-sm btn-outline-primary">Update</a>
+                                {{-- <a href="{{ route('user.edit', $user) }}" class="btn btn-sm btn-outline-primary">Update</a> --}}
 
                                 <form action="{{ route('user.destroy', $user) }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
                                     @csrf

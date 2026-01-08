@@ -23,6 +23,25 @@
                                 <input type="password" name="password" class="form-control" required>
                             </div>
 
+                            <div class="mb-3 d-flex gap-3">
+
+                                <div class="form-check ms-auto">
+                                    <input class="form-check-input" type="radio" name="role" id="role_admin"
+                                        value="admin" required>
+                                    <label class="form-check-label" for="role_admin">
+                                        Admin
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role" id="role_staff"
+                                        value="staff">
+                                    <label class="form-check-label" for="role_staff">
+                                        Staff
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="d-flex gap-2">
                                 <button class="btn btn-brown w-100">Save</button>
                                 <a href="{{ route('user.index') }}" class="btn btn-outline-secondary w-100">Back</a>

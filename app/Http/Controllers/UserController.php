@@ -32,19 +32,48 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
         ]);
 
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->assignRole($request['role']);
 
         return redirect()
             ->route('user.index')
             ->with('success', 'User successfully created!');
+    }
+
+    public function destroy(User $user)
+    {
+
+        if (auth()->id() === $user->id) {
+            return back()->with('error', 'You cannot delete your own account.');
+        }
+
+
+        if ($user->hasRole('admin')) {
+            $adminCount = User::role('admin')->count();
+
+            if ($adminCount <= 1) {
+                return back()->with('error', 'Cannot delete the last admin.');
+            }
+        }
+
+
+        $user->syncRoles([]);
+
+
+        $user->delete();
+
+        return redirect()
+            ->route('user.index')
+            ->with('success', 'User deleted successfully.');
     }
 }

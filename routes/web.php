@@ -56,23 +56,24 @@ Route::delete('/product/{product}', [ProductController::class, 'destroy'])
     ->name('product.destroy')->middleware([PermissionMiddleware::class . ':second floor']);
 
 // ADMIN (USER / STAFF)
-Route::get('/user', [UserController::class, 'index'])
-    ->name('user.index')->middleware();
+// Route::get('/user', [UserController::class, 'index'])
+//     ->name('user.index')->middleware();
 
-Route::get('/user/create', [UserController::class, 'create'])
-    ->name('user.create')->middleware();
+// Route::get('/user/create', [UserController::class, 'create'])
+//     ->name('user.create')->middleware();
 
-Route::post('/user', [UserController::class, 'store'])
-    ->name('user.store')->middleware();
+// Route::post('/user', [UserController::class, 'store'])
+//     ->name('user.store')->middleware();
 
-Route::get('/user/{id}/edit', [UserController::class, 'edit'])
-    ->name('user.edit')->middleware();
+// Route::get('/user/{id}/edit', [UserController::class, 'edit'])
+//     ->name('user.edit')->middleware();
 
-Route::put('/user/{id}', [UserController::class, 'update'])
-    ->name('user.update')->middleware();
+// Route::put('/user/{id}', [UserController::class, 'update'])
+//     ->name('user.update')->middleware();
 
-Route::delete('/user/{id}', [UserController::class, 'destroy'])
-    ->name('user.destroy')->middleware();
+// Route::delete('/user/{id}', [UserController::class, 'destroy'])
+//     ->name('user.destroy')->middleware();
+Route::resource('user', UserController::class);
 
 
 Route::resource('transactions', TransactionController::class)->except(['create'])->middleware(['auth', PermissionMiddleware::class . ':first floor']);
